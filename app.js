@@ -3,6 +3,7 @@ const express = require('express');
 const logger = require('morgan');
 
 // Routes
+const auth = require('./routes/auth.route');
 const account = require('./routes/account.route');
 
 // App 
@@ -15,7 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Views
-app.use('/api/v1', account)
+app.use('/api/v1', auth);
+app.use('/api/v1', account);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -27,15 +27,19 @@ exports.register = async (req, res) => {
 }
 
 exports.allAccounts = async (req, res) => {
-    const accounts = await models.User.findAll();
+    const accounts = await models.User.findAll({
+        attributes: {
+            exclude: ['password']
+        }
+    });
 
     res
         .status(200)
         .send({
-            data_length: accounts.length,
-            data: accounts,
             next: null,
-            prev: null
+            prev: null,
+            data_length: accounts.length,
+            data: accounts
         });
 }
 
@@ -43,6 +47,9 @@ exports.accountInfo = async (req, res, next) => {
     try {
         const account = await models.User.findOne({
             where: { nickname: req.params.nickname },
+            attributes: {
+                exclude: ['password']
+            },
             include: [
                 { model: models.Image, as: 'posts' }
             ]
@@ -60,5 +67,27 @@ exports.accountInfo = async (req, res, next) => {
         return next(createError(404));
     } catch(err) {
         return next(createError(404));
+    }
+}
+
+exports.updateAccount = async (req, res, next) => {
+    try {
+        console.log(req.params)
+        const account = await models.User.update(
+            req.body,
+            { where: { id: req.user.id, nickname: req.params.nickname  } }
+        );
+
+        if (account[0]) {
+            res
+                .status(200)
+                .send({
+                    updated: true
+                });
+        } else {
+            throw new Error('Error actualizando la cuenta, intentelo mas tarde.')
+        }
+    } catch(err) {
+        return next(createError(500), err.message);
     }
 }
