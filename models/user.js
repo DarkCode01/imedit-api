@@ -1,7 +1,13 @@
-const { hashPassword } = require('../utils/password');
+const { addSecureAndGravatar } = require('../utils/user');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
+    gravatar: {
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: true
+      }
+    },
     email: {
       type: DataTypes.STRING,
       unique: {
@@ -28,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-      beforeCreate: hashPassword,
-      beforeUpdate: hashPassword
+      beforeCreate: addSecureAndGravatar,
+      beforeUpdate: addSecureAndGravatar
     }
   });
 

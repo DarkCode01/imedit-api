@@ -1,5 +1,6 @@
 const models = require('../models');
 const createError = require('http-errors');
+const { generateToken } = require('../utils/token');
 
 
 exports.register = async (req, res) => {
@@ -13,7 +14,8 @@ exports.register = async (req, res) => {
         res
             .status(201)
             .send({
-                data: account
+                prefix: 'JWT',
+                access: await generateToken(account)
             });
     } catch(err) {
         res
