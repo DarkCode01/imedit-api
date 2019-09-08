@@ -23,7 +23,7 @@ exports.uploadPost = async (req, res, next) => {
         res
             .status(200)
             .send({
-                data: null
+                data: post
             });
     } catch(err) {
         console.log(err)
